@@ -1,6 +1,8 @@
 *.iml
 /.idea
-
+/build-tools/
+/tmp/
+/src/
 /config.yml
 /credentials.json
 /state.json

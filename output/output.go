@@ -111,12 +111,12 @@ type NewOutputOptions struct {
 
 func NewOutput(options *NewOutputOptions) (Output, error) {
 	switch options.Backend {
-	case "alsa":
-		out, err := newAlsaOutput(options)
-		if err != nil {
-			return nil, err
-		}
-		return out, nil
+	// case "alsa":
+	// 	out, err := newAlsaOutput(options)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	return out, nil
 	case "pulseaudio":
 		out, err := newPulseAudioOutput(options)
 		if err != nil {
