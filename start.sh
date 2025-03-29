@@ -2,7 +2,10 @@ echo "此脚本为Codespace专用！！！"
 echo "即将开始编译安卓动态库go-librespot"
 echo "在开始之前如果没有装过android sdk，请先运行：sudo bash install-JDK-Android-SDK.sh"
 echo "如果装过，则运行：export ANDROID_SDK_ROOT=/workspaces/go-librespot/build-tools/android-sdk && export ANDROID_HOME=/workspaces/go-librespot/build-tools/android-sdk && export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64"
-echo "这将会删除SRC和TMP文件夹！！！"
+echo "这将会删除本目录下的SRC和TMP文件夹！！！"
+echo "编译成功后，请将src和tmp文件夹复制到您的安卓设备上"
+echo "若要运行程序，请将go-librespot-armv6_android和libogg.so复制到/data/local/tmp中"
+echo "并在shell设置: export LD_LIBRARY_PATH=/data/local/tmp/ && export XDG_CONFIG_HOME=/data/local/tmp/ "
 echo "请等待3秒！"
 sleep 3;
 echo "按下回车后继续。。。";
@@ -32,6 +35,7 @@ export CGO_ENABLED=1
 sudo rm -rf ${TMEP_DIR}
 sudo rm -rf ${SRC_DIR}
 cd ${WORK_DIR} && mkdir tmp
+cd ${WORK_DIR} && mkdir src 
 sudo apt-get install libogg-dev libvorbis-dev libasound2-dev
 # sudo dpkg -S libogg-dev 
 # sudo dpkg -L libogg-dev 
@@ -72,8 +76,8 @@ export LD=$TOOLCHAIN/bin/ld
 export RANLIB=$TOOLCHAIN/bin/ranlib
 export STRIP=$TOOLCHAIN/bin/strip
 export GOOUTSUFFIX=-armv6
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TMEP_DIR}/deps/${TARGET}/lib
-export LIBRARY_PATH=${LIBRARY_PATH}:${TMEP_DIR}/deps/${TARGET}/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TMEP_DIR}/deps/${TARGET}/lib/
+export LIBRARY_PATH=${LIBRARY_PATH}:${TMEP_DIR}/deps/${TARGET}/lib/
 
 echo "动态库编译环境："
 echo TARGET=${TARGET}
@@ -104,19 +108,19 @@ sudo make && sudo make install && cd ${TMEP_DIR}
 # read -n 1 -s ;
 cd ${TMEP_DIR}/libogg-1.3.5 
 sudo make clean
-sudo ./configure --host=${TARGET} --prefix=${TMEP_DIR}/deps/${TARGET} CFLAGS="-shared -lgcc -nostartfiles -Wimplicit-function-declaration " 
+sudo ./configure --enable-shared=yes --enable-static=no --host=${TARGET} --prefix=${TMEP_DIR}/deps/${TARGET} CFLAGS="-shared -lgcc -Wimplicit-function-declaration -L${TMEP_DIR}/deps/${TARGET}/lib/ " #-nostartfiles 
 sudo make && sudo make install && cd ${TMEP_DIR} 
 # echo "按下回车后继续。。。";
 # read -n 1 -s ;
 cd ${TMEP_DIR}/libvorbis-1.3.7 
 sudo make clean
-sudo ./configure --host=${TARGET} --prefix=${TMEP_DIR}/deps/${TARGET} CFLAGS="-static -lgcc -nostartfiles -Wimplicit-function-declaration " 
+sudo ./configure --enable-shared=no --enable-static=yes --host=${TARGET} --prefix=${TMEP_DIR}/deps/${TARGET} CFLAGS="-static -lgcc -Wimplicit-function-declaration -L${TMEP_DIR}/deps/${TARGET}/lib/ "  #-nostartfiles 
 sudo make && sudo make install && cd ${TMEP_DIR} 
 # echo "按下回车后继续。。。";
 # read -n 1 -s ;
 
-cd ${WORK_DIR} && mkdir src && cd ${SRC_DIR}
-go clean -r && CGO_LDFLAGS="-v -lm" CC="/usr/bin/${TARGET}-gcc" go build -buildvcs=false -ldflags="-X github.com/devgianlu/go-librespot.commit=${COMMIT} -X github.com/devgianlu/go-librespot.version=${VERSION}" -o ./go-librespot${GOOUTSUFFIX} -a ${WORK_DIR}/cmd/daemon
+cd ${WORK_DIR} && cd ${SRC_DIR}
+go clean -r && CGO_LDFLAGS="-v -lm -logg -L${TMEP_DIR}/deps/${TARGET}/lib/" CC="/usr/bin/${TARGET}-gcc" go build -buildvcs=false -ldflags="-X github.com/devgianlu/go-librespot.commit=${COMMIT} -X github.com/devgianlu/go-librespot.version=${VERSION}" -o ./go-librespot${GOOUTSUFFIX} -a ${WORK_DIR}/cmd/daemon
 # echo "按下回车后继续。。。";
 # read -n 1 -s ;
 
@@ -135,8 +139,8 @@ export LD=$TOOLCHAIN/bin/ld
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export GOOUTSUFFIX=-armv6_android
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TMEP_DIR}/deps/${AD_TARGET}/lib
-export LIBRARY_PATH=${LIBRARY_PATH}:${TMEP_DIR}/deps/${AD_TARGET}/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TMEP_DIR}/deps/${AD_TARGET}/lib/
+export LIBRARY_PATH=${LIBRARY_PATH}:${TMEP_DIR}/deps/${AD_TARGET}/lib/
 
 echo "安卓编译环境："
 echo AD_TARGET=${AD_TARGET}
@@ -171,19 +175,19 @@ sudo make clean
 # read -n 1 -s ;
 cd ${TMEP_DIR}/libogg-1.3.5 
 sudo make clean
-sudo ./configure --host=${AD_TARGET} --prefix=${TMEP_DIR}/deps/${AD_TARGET} LDFLAGS="-v -Wl,--unresolved-symbols=ignore-all" CC="$TOOLCHAIN/bin/clang --target=$T_AD_TARGET$API " CFLAGS="-shared -nostartfiles " # -lgcc -Wimplicit-function-declaration
+sudo ./configure --enable-shared=yes --enable-static=no --host=${AD_TARGET} --prefix=${TMEP_DIR}/deps/${AD_TARGET} LDFLAGS="-v " CC="$TOOLCHAIN/bin/clang --target=$T_AD_TARGET$API " CFLAGS="-shared " # -lgcc -Wimplicit-function-declaration -nostartfiles -Wl,--unresolved-symbols=ignore-all
 sudo make && sudo make install && cd ${TMEP_DIR} 
 # echo "按下回车后继续。。。";
 # read -n 1 -s ;
 cd ${TMEP_DIR}/libvorbis-1.3.7 
 sudo make clean
-sudo ./configure --host=${AD_TARGET} --prefix=${TMEP_DIR}/deps/${AD_TARGET} LDFLAGS="-v -Wl,--unresolved-symbols=ignore-all" CC="$TOOLCHAIN/bin/clang --target=$T_AD_TARGET$API " CFLAGS="-static -nostartfiles "  # -lgcc -Wimplicit-function-declaration
+sudo ./configure --enable-shared=no --enable-static=yes --host=${AD_TARGET} --prefix=${TMEP_DIR}/deps/${AD_TARGET} LDFLAGS="-v -L${TMEP_DIR}/deps/${AD_TARGET}/lib/ " CC="$TOOLCHAIN/bin/clang --target=$T_AD_TARGET$API " CFLAGS="-static "  # -lgcc -Wimplicit-function-declaration -nostartfiles -Wl,--unresolved-symbols=ignore-all
 sudo make && sudo make install && cd ${TMEP_DIR} 
 # echo "按下回车后继续。。。";
 # read -n 1 -s ;
 
 cd ${WORK_DIR} && cd ${SRC_DIR}
-go clean -r && CGO_LDFLAGS="-v -Wl,--unresolved-symbols=ignore-all" CC="$TOOLCHAIN/bin/clang -v --target=$T_AD_TARGET$API " go build -buildvcs=false -ldflags="-X github.com/devgianlu/go-librespot.commit=${COMMIT} -X github.com/devgianlu/go-librespot.version=${VERSION}" -o ./go-librespot${GOOUTSUFFIX} -a ${WORK_DIR}/cmd/daemon
+go clean -r && CGO_LDFLAGS="-v -lm -L${TMEP_DIR}/deps/${AD_TARGET}/lib/" CC="$TOOLCHAIN/bin/clang -v --target=$T_AD_TARGET$API " go build -buildvcs=false -ldflags="-X github.com/devgianlu/go-librespot.commit=${COMMIT} -X github.com/devgianlu/go-librespot.version=${VERSION}" -o ./go-librespot${GOOUTSUFFIX} -a ${WORK_DIR}/cmd/daemon #-Wl,--unresolved-symbols=ignore-all
 
 #go run ${WORK_DIR}/cmd/daemon/main.go
 
