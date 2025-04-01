@@ -29,7 +29,7 @@
  */
 
 #include "config.h"
-extern int shmdt (const void *__shmaddr);
+extern int shmdt(void const* shmaddr);
 
 /* These funcs are only used by pcm_mmap when sys/shm.h is available. */
 #ifdef HAVE_SYS_SHM_H
@@ -43,7 +43,8 @@ extern int shmdt (const void *__shmaddr);
 #include <errno.h>
 #include <poll.h>
 #include <sys/mman.h>
-#include <sys/shm.h>
+//#include <sys/shm.h>
+#include "../include/shm.h"
 #include "list.h"
 
 #ifndef DOC_HIDDEN

@@ -118,19 +118,15 @@ ALSA_0.9.3 {
 } ALSA_0.9.0;
 
 ALSA_0.9.5 {
-  #ifdef HAVE_ALISP_SYMS
   global:
 
     @SYMBOL_PREFIX@alsa_lisp;
-  #endif
 } ALSA_0.9.3;
 
 ALSA_0.9.7 {
-  #ifdef HAVE_ALISP_SYMS
   global:
 
     @SYMBOL_PREFIX@alsa_lisp_*;
-  #endif
 } ALSA_0.9.5;
 
 ALSA_1.1.6 {
@@ -164,11 +160,11 @@ ALSA_1.2.10 {
     @SYMBOL_PREFIX@snd_seq_client_info_get_midi_version;
     @SYMBOL_PREFIX@snd_seq_client_info_get_ump_group_enabled;
     @SYMBOL_PREFIX@snd_seq_client_info_get_ump_groupless_enabled;
-    @SYMBOL_PREFIX@snd_seq_client_info_get_ump_conversion;
+    @SYMBOL_PREFIX@snd_seq_client_get_ump_conversion;
     @SYMBOL_PREFIX@snd_seq_client_info_set_midi_version;
     @SYMBOL_PREFIX@snd_seq_client_info_set_ump_group_enabled;
     @SYMBOL_PREFIX@snd_seq_client_info_set_ump_groupless_enabled;
-    @SYMBOL_PREFIX@snd_seq_client_info_set_ump_conversion;
+    @SYMBOL_PREFIX@snd_seq_client_set_ump_conversion;
     @SYMBOL_PREFIX@snd_seq_get_ump_endpoint_info;
     @SYMBOL_PREFIX@snd_seq_get_ump_block_info;
     @SYMBOL_PREFIX@snd_seq_set_ump_endpoint_info;

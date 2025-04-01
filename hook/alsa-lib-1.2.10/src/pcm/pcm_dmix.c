@@ -38,7 +38,8 @@
 #include <grp.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
-#include <sys/shm.h>
+//#include <sys/shm.h>
+#include "../../include/shm.h"
 #include <sys/sem.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
@@ -46,10 +47,10 @@
 #include <sys/mman.h>
 #include "pcm_direct.h"
 
-extern int shmctl (int __shmid, int __cmd, struct shmid_ds *__buf);
-extern int shmget (key_t __key, size_t __size, int __shmflg);
-extern void *shmat (int __shmid, const void *__shmaddr, int __shmflg);
-extern int shmdt (const void *__shmaddr);
+extern int shmctl(int shmid, int cmd, struct shmid_ds* buf);
+extern int shmget(key_t key, size_t size, int shmflg);
+extern void *shmat(int shmid, void const* shmaddr, int shmflg);
+extern int shmdt(void const* shmaddr);
 
 #ifndef PIC
 /* entry for static linking */

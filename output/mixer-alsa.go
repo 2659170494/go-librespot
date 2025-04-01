@@ -1,4 +1,5 @@
-//go:build !android && !darwin && !js && !windows && !nintendosdk
+//go:build !darwin && !js && !windows && !nintendosdk
+//↑ i guess it can support root android so i remove the "!android && "
 
 package output
 

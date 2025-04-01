@@ -3,6 +3,7 @@
 /build-tools/
 /tmp/
 /src/
+/.vscode/
 /config.yml
 /credentials.json
 /state.json
