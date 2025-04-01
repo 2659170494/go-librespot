@@ -2,7 +2,9 @@ package output
 
 import (
 	"fmt"
+	"runtime"
 
+	log "github.com/sirupsen/logrus";
 	librespot "github.com/devgianlu/go-librespot"
 )
 
@@ -111,12 +113,16 @@ type NewOutputOptions struct {
 
 func NewOutput(options *NewOutputOptions) (Output, error) {
 	switch options.Backend {
-	// case "alsa":
-	// 	out, err := newAlsaOutput(options)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	return out, nil
+	case "alsa":
+		if runtime.GOOS == "android"{
+			log.Warn("!!!ALAS ONLY SUPPORT INSTALLED ALAS DRIVER AND RUNNING PROGRAM IN TERMUX OF ROOT ANDROID DEVICE!!!")
+			log.Warn("!!!IF YOU DONT OR HAVEN'T,PLEASE ADD OR CHANGE \"audio_backend\" TO \"pulseaudio\" or \"pipe\" in $XDG_CONFIG_HOME/go-librespot/config.yml !!!")
+		}
+		out, err := newAlsaOutput(options)
+		if err != nil {
+			return nil, err
+		}
+		return out, nil
 	case "pulseaudio":
 		out, err := newPulseAudioOutput(options)
 		if err != nil {

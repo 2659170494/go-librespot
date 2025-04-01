@@ -27,9 +27,9 @@ extern "C" {
 extern int semctl (int __semid, int __semnum, int __cmd, ...) ;
 extern int semget (key_t __key, int __nsems, int __semflg) ;
 extern int semop (int __semid, struct sembuf *__sops, size_t __nsops) ;
-extern int shmget (key_t __key, size_t __size, int __shmflg);
-extern void *shmat (int __shmid, const void *__shmaddr, int __shmflg);
-extern int shmdt (const void *__shmaddr);
+extern int shmget(key_t key, size_t size, int shmflg);
+extern void *shmat(int shmid, void const* shmaddr, int shmflg);
+extern int shmdt(void const* shmaddr);
 
 #define DIRECT_IPC_SEMS         1
 #define DIRECT_IPC_SEM_CLIENT   0
