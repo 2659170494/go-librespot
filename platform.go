@@ -2,13 +2,20 @@ package go_librespot
 
 import (
 	"runtime"
+	"os"
 
 	spotifypb "github.com/devgianlu/go-librespot/proto/spotify"
 	clienttokenpb "github.com/devgianlu/go-librespot/proto/spotify/clienttoken/data/v0"
 )
 
+var GOOS string = runtime.GOOS;
+var GOARCH string = runtime.GOARCH;
+
 func GetOS() spotifypb.Os {
-	switch runtime.GOOS {
+	if os.Getenv("GO_LIBRESPOT_OS") != ""{
+		GOOS = os.Getenv("GO_LIBRESPOT_OS")
+	}
+	switch GOOS {
 	case "android":
 		return spotifypb.Os_OS_ANDROID
 	case "darwin":
@@ -27,7 +34,10 @@ func GetOS() spotifypb.Os {
 }
 
 func GetCpuFamily() spotifypb.CpuFamily {
-	switch runtime.GOARCH {
+	if os.Getenv("GO_LIBRESPOT_ARCH") != ""{
+		GOARCH = os.Getenv("GO_LIBRESPOT_ARCH")
+	}
+	switch GOARCH {
 	case "386":
 		return spotifypb.CpuFamily_CPU_X86
 	case "amd64":
@@ -35,6 +45,8 @@ func GetCpuFamily() spotifypb.CpuFamily {
 	case "arm":
 		return spotifypb.CpuFamily_CPU_ARM
 	case "arm64":
+		return spotifypb.CpuFamily_CPU_ARM
+	case "aarch64":
 		return spotifypb.CpuFamily_CPU_ARM
 	case "mips":
 		return spotifypb.CpuFamily_CPU_MIPS
@@ -48,11 +60,17 @@ func GetCpuFamily() spotifypb.CpuFamily {
 }
 
 func GetPlatform() spotifypb.Platform {
-	switch runtime.GOOS {
+	if os.Getenv("GO_LIBRESPOT_OS") != ""{
+		GOOS = os.Getenv("GO_LIBRESPOT_OS")
+	}
+	if os.Getenv("GO_LIBRESPOT_ARCH") != ""{
+		GOARCH = os.Getenv("GO_LIBRESPOT_ARCH")
+	}
+	switch GOOS {
 	case "android":
 		return spotifypb.Platform_PLATFORM_ANDROID_ARM
 	case "darwin":
-		switch runtime.GOARCH {
+		switch GOARCH {
 		case "386":
 			return spotifypb.Platform_PLATFORM_OSX_X86
 		case "amd64":
@@ -61,21 +79,21 @@ func GetPlatform() spotifypb.Platform {
 			return spotifypb.Platform_PLATFORM_OSX_PPC
 		}
 	case "freebsd":
-		switch runtime.GOARCH {
+		switch GOARCH {
 		case "386":
 			return spotifypb.Platform_PLATFORM_FREEBSD_X86
 		case "amd64":
 			return spotifypb.Platform_PLATFORM_FREEBSD_X86_64
 		}
 	case "ios":
-		switch runtime.GOARCH {
+		switch GOARCH {
 		case "arm":
 			return spotifypb.Platform_PLATFORM_IPHONE_ARM
 		case "arm64":
 			return spotifypb.Platform_PLATFORM_IPHONE_ARM64
 		}
 	case "linux":
-		switch runtime.GOARCH {
+		switch GOARCH {
 		case "386":
 			return spotifypb.Platform_PLATFORM_LINUX_X86
 		case "amd64":
@@ -88,9 +106,11 @@ func GetPlatform() spotifypb.Platform {
 			return spotifypb.Platform_PLATFORM_LINUX_ARM
 		case "arm64":
 			return spotifypb.Platform_PLATFORM_LINUX_ARM
+		case "aarch64":
+			return spotifypb.Platform_PLATFORM_LINUX_ARM
 		}
 	case "windows":
-		switch runtime.GOARCH {
+		switch GOARCH {
 		case "386":
 			return spotifypb.Platform_PLATFORM_WIN32_X86
 		case "amd64":
@@ -108,7 +128,10 @@ func GetPlatform() spotifypb.Platform {
 }
 
 func GetPlatformSpecificData() *clienttokenpb.PlatformSpecificData {
-	switch runtime.GOOS {
+	if os.Getenv("GO_LIBRESPOT_OS") != ""{
+		GOOS = os.Getenv("GO_LIBRESPOT_OS")
+	}
+	switch GOOS {
 	case "android":
 		return &clienttokenpb.PlatformSpecificData{
 			Data: &clienttokenpb.PlatformSpecificData_Android{
@@ -140,6 +163,5 @@ func GetPlatformSpecificData() *clienttokenpb.PlatformSpecificData {
 			},
 		}
 	}
-
 	return nil
 }
