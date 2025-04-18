@@ -1,9 +1,11 @@
+#!/bin/bash
 echo "此脚本为Codespace专用！！！"
 echo "即将开始编译安卓动态库go-librespot"
 echo "在开始之前如果没有装过android sdk，请先运行：sudo bash install-JDK-Android-SDK.sh"
 echo "如果装过，则运行：export ANDROID_SDK_ROOT=/workspaces/go-librespot/build-tools/android-sdk && export ANDROID_HOME=/workspaces/go-librespot/build-tools/android-sdk && export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64"
 echo "这将会删除本目录下的SRC和TMP文件夹！！！"
 echo "如果你不了解，请先不要运行脚本！！看看README-ANDROID.MD！！！"
+echo "(如果需要合并变基最新请求,添加upstream为'https://github.com/devgianlu/go-librespot',然后'git fetch upstream && git checkout --track master && git rebase upstream/master && git push --force')"
 echo "请等待3秒！"
 sleep 3;
 echo "按下回车后继续。。。";
