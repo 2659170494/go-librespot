@@ -1,3 +1,4 @@
+#!/bin/bash
 has_root() {
     if [[ $EUID -ne 0 ]]; then
         echo "Permission needs to be elevated: This installation program must be executed by root or sudo,You can use this command:sudo bash install-JDK-Android_SDK.sh" 1>&2
